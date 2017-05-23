@@ -1,22 +1,17 @@
-import re
-import ast
-from setuptools import setup, find_packages
 from os import path
+
+from setuptools import setup, find_packages
 
 here = path.abspath(path.dirname(__file__))
 
 
 # Get the long description from the README file
-with open(path.join(here, 'README.rst'), 'rb') as f:
+with open(path.join(here, 'README.rst'), 'r') as f:
     long_description = f.read()
 
 
-_version_re = re.compile(r'__version__\s+=\s+(.*)')
-
-
-with open('ruspost_soap/__init__.py', 'rb') as f:
-    version = str(ast.literal_eval(_version_re.search(
-        f.read().decode('utf-8')).group(1)))
+with open(path.join(here, 'VERSION'), 'r') as f:
+    version = f.read().strip()
 
 
 setup(
