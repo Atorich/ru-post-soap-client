@@ -10,8 +10,8 @@ License: `LGPL v3 <http://opensource.org/licenses/LGPL-3.0>`__
 Требования
 ----------
 
--  python == 2.7.\*
--  `suds <http://pypi.python.org/pypi/suds/0.4>`__ >= 0.4
+-  python == 2.7.\* || 3.x
+-  `suds <https://pypi.python.org/pypi/suds-jurko>`__ >= 0.4
 
 Config
 ------

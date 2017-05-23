@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from past.builtins import basestring
+from builtins import *
 import unittest
 
 from client import RuPostClient, MakeTicketException
@@ -26,14 +34,14 @@ class RuPostClientTest(unittest.TestCase):
 
         answer = client.make_ticket(TRACKS)
 
-        ticket_number = answer.keys()[0]
-        tracks = answer.values()[0]
+        ticket_number = list(answer.keys())[0]
+        tracks = list(answer.values())[0]
 
         self.assertTrue(isinstance(ticket_number, basestring))
         self.assertTrue(set(TRACKS) >= set(tracks))
 
-        print u'Тикет: {0} используйте в списке TICKETS в `test_data`'.format(
-            ticket_number)
+        print(u'Тикет: {0} используйте в списке TICKETS в `test_data`'.format(
+            ticket_number))
 
     def test_track_request(self):
         """
@@ -49,7 +57,7 @@ class RuPostClientTest(unittest.TestCase):
 
         self.assertTrue(isinstance(answer, dict))
 
-        print u'\n\nОТВЕТ по тикетам:\n{0}\n\n'.format(answer)
+        print(u'\n\nОТВЕТ по тикетам:\n{0}\n\n'.format(answer))
 
 
 if __name__ == '__main__':

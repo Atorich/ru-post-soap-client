@@ -1,6 +1,15 @@
 # -*- coding: utf-8 -*-
 
 
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import *
+from builtins import object
 from collections import Iterable
 from datetime import datetime
 
@@ -107,7 +116,7 @@ class RuPostClient(object):
 
             if error:
                 error_number = getattr(error, '_ErrorTypeID', '')
-                error_text = unicode(getattr(error, '_ErrorName', ''))
+                error_text = str(getattr(error, '_ErrorName', ''))
 
                 ticket_status[ticket] = {'error': (error_number,
                                                     error_text)}
@@ -116,7 +125,7 @@ class RuPostClient(object):
             tracks = []
 
             for item in answer.value.Item:
-                barcode = unicode(item._Barcode)
+                barcode = str(item._Barcode)
                 item_error = getattr(item, 'Error', None)
 
                 if item_error:
@@ -124,7 +133,7 @@ class RuPostClient(object):
                         item_error = item_error[0]
 
                     item_error_number = getattr(item_error, '_ErrorTypeID', '')
-                    item_error_text = unicode(getattr(item_error, '_ErrorName',
+                    item_error_text = str(getattr(item_error, '_ErrorName',
                       ''))
                     tracks.append(
                         {
@@ -142,7 +151,7 @@ class RuPostClient(object):
                 data = []
 
                 for operation in operations:
-                    oper_name = unicode(operation._OperName)
+                    oper_name = str(operation._OperName)
 
                     data.append(dict(
                         oper_type=operation._OperTypeID,
@@ -150,7 +159,7 @@ class RuPostClient(object):
                         operation=oper_name,
                         date=datetime.strptime(operation._DateOper,
                             "%d.%m.%Y %H:%M:%S"),
-                        zipcode=unicode(operation._IndexOper),
+                        zipcode=str(operation._IndexOper),
                         attribute=RPOST_OPERCTGIDS.get(
                             operation._OperCtgID, str(
                               operation._OperCtgID))
@@ -193,13 +202,13 @@ class RuPostClient(object):
         ticket_number = getattr(result, 'value', None)
 
         if ticket_number:
-            return unicode(ticket_number)
+            return str(ticket_number)
         else:
             error = getattr(result, 'error', None)
 
             if error:
                 error_number = getattr(error, '_ErrorTypeID', '')
-                error_text = unicode(getattr(error, '_ErrorName', ''))
+                error_text = str(getattr(error, '_ErrorName', ''))
 
                 raise MakeTicketException(error_number, error_text)
             else:
