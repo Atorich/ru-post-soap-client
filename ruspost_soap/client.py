@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
 
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
 from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from future import standard_library
+
 standard_library.install_aliases()
-from builtins import str
-from builtins import *
-from builtins import object
+from builtins import str, object
 from collections import Iterable
 from datetime import datetime
 
@@ -24,10 +24,6 @@ RPOST_TRACK_PER_TICKET = settings.RPOST_TRACK_PER_TICKET
 
 if RPOST_TRACK_PER_TICKET > 3000:  # ограничение сервиса
     RPOST_TRACK_PER_TICKET = 3000
-
-if not RPOST_WSDL_URL:
-    RPOST_WSDL_URL = 'http://vfc.russianpost.ru:8080/FederalClient/' \
-                                                        'ItemDataService?wsdl'
 
 RPOST_OPERTYPEIDS = {  # также в текстовом виде в operation._OperName
     1: u'Приём',
@@ -65,6 +61,7 @@ class MakeTicketException(Exception):
     """
     Ошибка создания тикета.
     """
+
     def __init__(self, number='', message=''):
         self.number = number
         self.message = message
@@ -94,8 +91,11 @@ class RuPostClient(object):
         self.login = login if login else RPOST_LOGIN
         self.password = password if password else RPOST_PASSWORD
         self.url = url if url else RPOST_WSDL_URL
-        self.tracks_per_ticket = tracks_per_ticket if tracks_per_ticket and \
-                        tracks_per_ticket <= 3000 else RPOST_TRACK_PER_TICKET
+
+        if tracks_per_ticket and tracks_per_ticket <= 3000:
+            self.tracks_per_ticket = tracks_per_ticket
+        else:
+            self.tracks_per_ticket = RPOST_TRACK_PER_TICKET
 
         if not self.tracks_per_ticket:
             self.tracks_per_ticket = 100
@@ -110,7 +110,7 @@ class RuPostClient(object):
 
         for ticket in tickets:
             answer = self.client.service.getResponseByTicket(ticket=ticket,
-                login=self.login, password=self.password)
+                                                             login=self.login, password=self.password)
 
             error = getattr(answer, 'error', None)
 
@@ -119,7 +119,7 @@ class RuPostClient(object):
                 error_text = str(getattr(error, '_ErrorName', ''))
 
                 ticket_status[ticket] = {'error': (error_number,
-                                                    error_text)}
+                                                   error_text)}
                 continue
 
             tracks = []
@@ -134,7 +134,7 @@ class RuPostClient(object):
 
                     item_error_number = getattr(item_error, '_ErrorTypeID', '')
                     item_error_text = str(getattr(item_error, '_ErrorName',
-                      ''))
+                                                  ''))
                     tracks.append(
                         {
                             barcode: {
@@ -158,11 +158,11 @@ class RuPostClient(object):
                         oper_ctg=operation._OperCtgID,
                         operation=oper_name,
                         date=datetime.strptime(operation._DateOper,
-                            "%d.%m.%Y %H:%M:%S"),
+                                               "%d.%m.%Y %H:%M:%S"),
                         zipcode=str(operation._IndexOper),
                         attribute=RPOST_OPERCTGIDS.get(
                             operation._OperCtgID, str(
-                              operation._OperCtgID))
+                                operation._OperCtgID))
                     ))
 
                 tracks.append(
@@ -197,7 +197,7 @@ class RuPostClient(object):
         req_file.Item = track_set
 
         result = self.client.service.getTicket(request=req_file,
-            login=self.login, password=self.password)
+                                               login=self.login, password=self.password)
 
         ticket_number = getattr(result, 'value', None)
 
