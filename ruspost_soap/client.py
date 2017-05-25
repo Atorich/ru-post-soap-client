@@ -15,7 +15,7 @@ from datetime import datetime
 
 from suds.client import Client
 
-import settings
+from . import settings
 
 RPOST_LOGIN = settings.RPOST_LOGIN
 RPOST_PASSWORD = settings.RPOST_PASSWORD
